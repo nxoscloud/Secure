@@ -6,7 +6,11 @@ It allows NextLanguage Developers to create plugins for NextLanguage in v2.0 and
 
 **Plugin Registrations**
 This is an example of a code on how to register a plugin. In the ``BUILD_CONFIG`` file there should be a new registration section that allows users to register plugins.
-The Secure Plugin which is defined by ``Secure @require(path.join(__dirname, '../../../../package/bulit-in/Secure/package.js'));`` **SHOULD NOT BE REMOVED** as of v2.0-dev.
+The Secure Plugin which is defined by: <br>
+```yaml
+Secure @require(path.join(__dirname, '../../../../package/bulit-in/Secure/package.js'));
+```
+**SHOULD NOT BE REMOVED as of v2.0-dev**
 
 The ``@require`` syntax is only avaliable for NextLanguage's Built-in packages. And any other packages not bulit-in should be using the ``@path: path/to/plugin`` syntax which is avaliable for all other plugins.
 The main file which signs the plugin should be listed in ``@path``.
