@@ -21,69 +21,56 @@ PLUGINS: Secure @require(path.join(__dirname, '../../../../package/bulit-in/Secu
 PLUGINS: Test @path: ../../../app.js
 ```
 
+**Signning Modules**
+
+The functions and unknown modules in the code below, isn't required to be imported by the Plugin Developer, as NextLanguage will automatically pass through the required modules that the Signing file should ever need.
+All the pass-through modules will be listed in the Pass-through section.
+
+**Syntaxes**
+The ``package.create(type, path, name)`` is the correct syntax for creating a package.
+The ``path`` should be your Plugin's main code-file, not the file that is registered in ``BUILD_CONFIG``.
+
+**Signature function exporting**
+The function that is at the start of the file is required to be name ``Service()``.
+And is required to be an ``module.exports = function Service() {}``. To allow Secure to read the signature of the plugin.
+
+And the function should also be called on the same file that is signning the plugin.
+No other function should be present within the signning module of the plugin.
+
 **Signning Plugins**
 As of right now, in v2.0-dev branch. This is actually just the Application to register an signed package.
 What you're seeing below is an example testing code used for NextLanguage's v2.0 Plugin System.
 This was a custom plugin which won't be included in the v2.0 patch, but we'll link it [here](https://github.com/nxoscloud/Custom).
 
-The functions and unknown modules in the code below, isn't required to be imported by the Plugin Developer, as NextLanguage will automatically pass through the required modules that the Signing file should ever need.
-All the pass-through modules will be listed in the Pass-through section.
-
-The ``package.create(type, path, name)`` is the correct syntax for creating a package.
-The ``path`` should be your Plugin's main code-file, not the file that is registered in ``BUILD_CONFIG``.
-The function that is at the start of the file can be named whatever, but is recommended to stay as a function. To split the other logic from the signning logic.
-And the function should also be called on the same file that is signning the plugin.
-
 ```javascript
-function CustomService() {
+module.exports = function CustomService() {
     // path.join(__dirname, '../../../../Custom/default.js') just returns (root) which is outside of the
     // NextLanguage-Source folder. And (Custom/default.js) is the main file for the package.
+
+    // Signs the plugin
     const Custom = package.create('package', path.join(__dirname, '../../../../Custom/default.js'), 'Custom');
+
+    // Enables the plugin
     Custom.config('package', 'Custom', 'enabled', true);
+
+    // Returns if the plugin is enabled or not
     const enabled = Custom.strings.full.package.dev.self[1];
 
-    // Additional information toggle for non-production ready
-    // Updates for Custom.
-    const production = false;
-
+    // Additional Plugin Information
     Custom.config('package', 'Custom', 'author', 'Cassitydev');
     Custom.config('package', 'Custom', 'version', '0.1.0');
     Custom.config('package', 'Custom', 'repo', 'No Repository published for Custom yet.');
     Custom.config('package', 'Custom', 'description', '(Custom package for NextLanguage) A package which Customly exposes NextLanguages Modules to external files. I.E. Plugins, packages, postload and preload files.');
 
+    // Checks if the plugin is enabled or not (Optional)
     if (enabled === true) {
-        if (production === false) {
-            addOutput('Custom package is enabled.');
-        }
+        addOutput('Custom package is enabled.');
     } else {
-        if (production === false) {
-            addOutput('Custom package is disabled along an unknown error.');
-        } else {
-            addOutput('Custom package is disabled.');
-        }
+        addOutput('Custom package is disabled.');
     }
 
     return Custom
 }
-
-const Strings = CustomService();
-
-console.log(Strings.strings.full.package);
-/**
-* Output for (Strings.strings.full.package)
-{
-  user: {
-    name: 'Custom',
-    author: 'Cassitydev',
-    repo: 'No Repository published for Custom yet.',
-    description: '(Custom package for NextLanguage) A package which Customly exposes NextLanguages Modules to external files. I.E. Plugins, packages, postload and preload files.',
-    version: '0.1.0',
-    license: null,
-    app: 'C:\\Users\\jedik\\Documents\\GitHub\\Project Next\\Products\\NextLanguage\\Custom\\default.js'
-  },
-  dev: { self: [ 'Custom', true ], global: null }
-}
-*/
 ```
 
 **Pass-Through Modules**
