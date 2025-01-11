@@ -1,8 +1,11 @@
+// Import node_modules
 const path = require('path');
 
-const Packages = require('../../../modules/class/Packages.js');
+// Import necessary modules
+const Packages = require('../../modules/class/Packages');
 const package = new Packages;
 
+// Checks if the plugin is enabled or not?
 const secured = package.strings.full.package.dev.self;
 
 module.exports = function SecureService() {
